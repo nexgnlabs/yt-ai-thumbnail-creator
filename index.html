@@ -2,68 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nano Banana Thumbnail Studio</title>
+    <title>GPT-Image Thumbnail Studio</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        :root { --yt-red: #ff0000; --bg: #0a0a0a; --card: #151515; --text: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
-        .studio-card { width: 100%; max-width: 700px; background: var(--card); border-radius: 20px; padding: 30px; border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
-        .yt-logo { color: var(--yt-red); font-weight: bold; font-size: 24px; margin-bottom: 20px; text-align: center; }
-        .input-box { width: 100%; padding: 15px; background: #000; border: 1px solid #444; border-radius: 10px; color: white; margin-bottom: 15px; font-size: 16px; box-sizing: border-box; }
-        .create-btn { width: 100%; padding: 16px; background: var(--yt-red); border: none; border-radius: 10px; color: white; font-weight: 900; cursor: pointer; letter-spacing: 1px; transition: 0.2s; }
-        .create-btn:hover { background: #cc0000; transform: scale(0.99); }
-        #canvas { margin-top: 25px; border-radius: 15px; overflow: hidden; background: #222; min-height: 380px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #333; }
-        #canvas img { width: 100%; height: auto; display: block; }
-        .loader { display: none; position: absolute; font-weight: bold; color: #00d4ff; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        :root { --yt-red: #ff0000; --bg: #090909; --card: #121212; --text: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid #333; }
+        .header { text-align: center; border-bottom: 2px solid var(--yt-red); margin-bottom: 20px; padding-bottom: 10px; }
+        .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 3; padding: 12px; background: #000; border: 1px solid #444; border-radius: 6px; color: white; }
+        .gen-btn { flex: 1; background: var(--yt-red); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .gen-btn:hover { background: #cc0000; }
+        #viewer { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: 1px solid #222; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        #viewer img { width: 100%; height: 100%; object-fit: cover; }
+        .loader { display: none; position: absolute; color: var(--yt-red); font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div class="studio-card">
-    <div class="yt-logo">🎥 NANO BANANA THUMBNAIL STUDIO</div>
-    
-    <input type="text" id="userTopic" class="input-box" placeholder="Describe your video (e.g. iPhone 17 Unboxing, Scary Ghost Story)">
-    
-    <button class="create-btn" onclick="generateThumbnail()">GENERATE 4K THUMBNAIL</button>
+<div class="container">
+    <div class="header">
+        <h2 style="margin:0;">🎥 GPT-Image Thumbnail Creator</h2>
+        <small style="color:#666;">Optimized for YouTube India Trends (Dec 2025)</small>
+    </div>
 
-    <div id="canvas">
-        <div id="loadingText" class="loader">⚡ RENDERING VIRAL VISUALS...</div>
+    <div class="input-area">
+        <input type="text" id="promptInput" placeholder="Enter video topic (e.g. IPL 2025 Records, Mystery Story)">
+        <button class="gen-btn" onclick="createThumbnail()">GENERATE</button>
+    </div>
+
+    <div id="viewer">
+        <div id="status" class="loader">⚡ BOOTING GPT-IMAGE-1...</div>
     </div>
 </div>
 
 <script>
-    async function generateThumbnail() {
-        const topic = document.getElementById('userTopic').value;
-        const canvas = document.getElementById('canvas');
-        const loader = document.getElementById('loadingText');
+    async function createThumbnail() {
+        const userInput = document.getElementById('promptInput').value;
+        const viewer = document.getElementById('viewer');
+        const status = document.getElementById('status');
 
-        if (!topic) { alert("Please enter a video topic!"); return; }
+        if (!userInput) return alert("Please enter a topic.");
 
-        // UI State
-        loader.style.display = 'block';
-        const oldImg = canvas.querySelector('img');
+        // UI Prep
+        status.style.display = 'block';
+        const oldImg = viewer.querySelector('img');
         if (oldImg) oldImg.remove();
 
-        // AUTOMATIC PROMPT ENHANCEMENT
-        // This adds professional qualities to your simple input
-        const enhancedPrompt = `High-impact YouTube thumbnail, vivid colors, 
-        dramatic cinematic lighting, subject: ${topic}, 
-        blurred background for depth of field, sharp focus, 8k resolution, 
-        extremely detailed, clean composition for text placement.`;
+        // Professional Prompt Wrapper
+        // This ensures the gpt-image-1 model understands it's for YouTube
+        const finalPrompt = `Professional YouTube Thumbnail, High-Contrast, 
+        Vivid Colors, Cinematic Lighting. Subject: ${userInput}. 
+        Blurred background, sharp foreground focus, 4k detail, 
+        space for text overlay on left side.`;
 
         try {
-            // Using your requested Nano Banana Model
-            const imageElement = await puter.ai.txt2img(enhancedPrompt, { 
-                model: "gemini-2.5-flash-image-preview" 
+            // Using your requested model: gpt-image-1
+            const imageElement = await puter.ai.txt2img(finalPrompt, { 
+                model: "gpt-image-1" 
             });
             
-            canvas.appendChild(imageElement);
-        } catch (error) {
-            console.error(error);
-            canvas.innerHTML += `<p style="color:red; padding:20px;">Limit reached or Error. Please wait 1 minute.</p>`;
+            viewer.appendChild(imageElement);
+        } catch (err) {
+            console.error(err);
+            viewer.innerHTML += `<p style="color:orange; padding:20px;">AI Busy. Please wait 15 seconds.</p>`;
         } finally {
-            loader.style.display = 'none';
+            status.style.display = 'none';
         }
     }
 </script>
