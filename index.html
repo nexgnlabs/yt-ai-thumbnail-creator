@@ -3,54 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>India YouTube Trend Pulse (Gemini 3 + GPT-5)</title>
+    <title>India YouTube Trend Pulse (v3.0 - Resilient)</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
         :root { --yt-red: #ff0000; --bg: #0a0a0a; --card: #151515; --text: #ffffff; --accent: #00d4ff; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: var(--card); border-radius: 20px; padding: 40px; border: 1px solid #333; }
-        
+        .container { max-width: 850px; margin: auto; background: var(--card); border-radius: 20px; padding: 30px; border: 1px solid #333; }
         #loader { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
         .bar-loader { width: 50px; height: 50px; border: 5px solid #222; border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .header { text-align: center; margin-bottom: 40px; }
-        .engine-badge { font-size: 10px; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .controls { display: flex; gap: 15px; margin-bottom: 30px; }
-        select { flex: 2; padding: 15px; background: #000; color: #fff; border: 1px solid #444; border-radius: 12px; font-size: 16px; outline: none; }
-        .btn { flex: 1; background: var(--yt-red); color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn:hover { background: #cc0000; transform: translateY(-2px); }
-
-        .trend-list { border-top: 1px solid #333; padding-top: 20px; }
-        .trend-item { 
-            display: grid; grid-template-columns: 40px 1fr 120px; 
-            padding: 18px; border-bottom: 1px solid #222; 
-            transition: 0.3s; cursor: help;
-        }
-        .trend-item:hover { background: #1a1a1a; }
-        .rank { color: var(--accent); font-weight: 800; font-family: monospace; }
-        .topic-title { font-weight: 500; font-size: 15px; color: #eee; }
-        .viral-meter { font-size: 11px; text-align: right; color: #888; }
-        .global-tag { font-size: 9px; background: #333; padding: 2px 6px; border-radius: 4px; margin-left: 10px; color: #aaa; }
+        .controls { display: flex; gap: 10px; margin-bottom: 25px; }
+        select { flex: 2; padding: 12px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; }
+        .btn { flex: 1; background: var(--yt-red); color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .trend-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #222; font-size: 14px; }
+        .rank { width: 40px; color: var(--accent); font-weight: bold; }
+        .topic { flex: 1; }
+        .tag { font-size: 10px; background: #333; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="bar-loader"></div>
-    <p id="loader-status" style="margin-top: 20px;">Gemini 3 Pro: Analyzing Indian Marketplace...</p>
+    <p id="loader-status" style="margin-top: 20px;">Fetching India's Top Trends...</p>
 </div>
 
 <div class="container">
-    <div class="header">
-        <div class="engine-badge">Dual-Core: Gemini 3 Pro + GPT-5.0</div>
-        <h1>India Video Trend Analyzer</h1>
-    </div>
-
+    <h2 style="text-align:center; margin-top:0;">India Viral Trend Hub</h2>
     <div class="controls">
         <select id="category">
-            <option value="Trending Now">🔥 Trending Now (India)</option>
+            <option value="Trending Now">🔥 Trending Now</option>
             <option value="Entertainment">🎬 Entertainment</option>
             <option value="Education">📚 Education</option>
             <option value="Gaming">🎮 Gaming</option>
@@ -66,70 +48,53 @@
             <option value="Comedy">😂 Comedy</option>
             <option value="Nonprofits & Activism">✊ Nonprofits & Activism</option>
         </select>
-        <button class="btn" onclick="fetchTrends()">ANALYZE TRENDS</button>
+        <button class="btn" onclick="fetchTrends()">REFRESH TRENDS</button>
     </div>
-
-    <div id="trendOutput" class="trend-list">
-        </div>
+    <div id="trendOutput"></div>
 </div>
 
 <script>
     async function fetchTrends() {
         const cat = document.getElementById('category').value;
         const loader = document.getElementById('loader');
-        const status = document.getElementById('loader-status');
         const output = document.getElementById('trendOutput');
-
+        
         loader.style.display = 'flex';
         output.innerHTML = '';
 
+        const prompt = `Find the TOP 10 trending one-liner YouTube topics for the category "${cat}" in India for December 2025. 
+                        Include global megatrends if relevant to India. 
+                        Format: Rank | Topic Title | Global (Yes/No)`;
+
         try {
-            // STEP 1: Gemini 3 Pro fetches data for the specific Indian context
-            status.innerText = `Gemini 3 Pro: Syncing December 2025 data for ${cat} (India)...`;
-            const geminiPrompt = `Analyze the current YouTube trends in India for the category: "${cat}". 
-            List the Top 10 hottest one-liner topics/trends for this week in December 2025.
-            If a global topic is massive (e.g., MrBeast, GTA VI, AI breakthrough), include it.
-            Output format: Rank|Topic Title|Viral Potential|IsGlobal(true/false)`;
+            // PRIMARY ATTEMPT: Gemini 3 Pro
+            let response;
+            try {
+                response = await puter.ai.chat(prompt, { model: 'gemini-3-pro-preview' });
+            } catch (e) {
+                console.warn("Gemini 3 Pro Busy, switching to Stable Fallback...");
+                // FALLBACK: Gemini 2.5 Flash (More stable)
+                response = await puter.ai.chat(prompt, { model: 'gemini-2.5-flash' });
+            }
 
-            const geminiResponse = await puter.ai.chat(geminiPrompt, { model: 'gemini-3-pro-preview' });
-            
-            // STEP 2: GPT-5 refines the logic and ensures the "One-liner" constraint is strict
-            status.innerText = "GPT-5: Refining Viral Logic & Strategy...";
-            const gptPrompt = `Review these trends: [${geminiResponse.toString()}]. 
-            Ensure each topic is a single, powerful one-liner. Add a viral score (1-100%).`;
-
-            const finalData = await puter.ai.chat(gptPrompt, { model: 'gpt-5' });
-            
-            // Render to Column
-            const trends = finalData.toString().split('\n').filter(t => t.includes('|'));
-            
-            trends.forEach((line) => {
-                const parts = line.split('|');
-                if(parts.length >= 2) {
-                    const row = document.createElement('div');
-                    row.className = 'trend-item';
-                    const isGlobal = parts[3] && parts[3].trim().toLowerCase() === 'true';
-                    
-                    row.innerHTML = `
-                        <div class="rank">${parts[0]}</div>
-                        <div class="topic-title">
-                            ${parts[1]} 
-                            ${isGlobal ? '<span class="global-tag">GLOBAL</span>' : ''}
-                        </div>
-                        <div class="viral-meter">${parts[2] || '90%'} Velocity</div>
-                    `;
-                    output.appendChild(row);
-                }
+            const lines = response.toString().split('\n').filter(l => l.includes('|'));
+            lines.forEach(line => {
+                const [rank, title, global] = line.split('|');
+                const item = document.createElement('div');
+                item.className = 'trend-item';
+                const globalTag = global && global.toLowerCase().includes('yes') ? '<span class="tag">GLOBAL</span>' : '';
+                item.innerHTML = `<div class="rank">${rank}</div><div class="topic">${title}${globalTag}</div>`;
+                output.appendChild(item);
             });
 
-        } catch (e) {
-            console.error(e);
-            alert("Trend fetch error. Please try again.");
+        } catch (error) {
+            output.innerHTML = `<div style="color:#ff4444; text-align:center; padding:20px;">
+                <b>Network Error:</b> The trend engine is temporarily overloaded. Please try again in 30 seconds.
+            </div>`;
         } finally {
             loader.style.display = 'none';
         }
     }
 </script>
-
 </body>
 </html>
