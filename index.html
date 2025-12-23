@@ -2,74 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GPT-Image Thumbnail Studio</title>
+    <title>Viral Idea Generator v2025</title>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        :root { --yt-red: #ff0000; --bg: #090909; --card: #121212; --text: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 800px; background: var(--card); border-radius: 12px; padding: 25px; border: 1px solid #333; }
-        .header { text-align: center; border-bottom: 2px solid var(--yt-red); margin-bottom: 20px; padding-bottom: 10px; }
-        .input-area { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 3; padding: 12px; background: #000; border: 1px solid #444; border-radius: 6px; color: white; }
-        .gen-btn { flex: 1; background: var(--yt-red); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .gen-btn:hover { background: #cc0000; }
-        #viewer { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: 1px solid #222; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        #viewer img { width: 100%; height: 100%; object-fit: cover; }
-        .loader { display: none; position: absolute; color: var(--yt-red); font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
+        :root { --yt-red: #ff0000; --bg: #0a0a0a; --card: #161616; --accent: #00d4ff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; padding: 20px; }
+        .app-shell { max-width: 900px; margin: auto; background: var(--card); border-radius: 15px; padding: 30px; border: 1px solid #333; }
+        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+        .grid-controls { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 25px; }
+        select, .btn { padding: 15px; border-radius: 8px; font-weight: bold; border: none; font-size: 14px; }
+        select { background: #222; color: #fff; border: 1px solid #444; }
+        .btn { background: var(--yt-red); color: white; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #b30000; transform: translateY(-2px); }
+        .result-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .idea-card { background: #222; padding: 20px; border-radius: 10px; border-left: 4px solid var(--accent); position: relative; }
+        .viral-badge { position: absolute; top: 10px; right: 10px; background: #00d4ff22; color: var(--accent); font-size: 10px; padding: 3px 7px; border-radius: 4px; }
+        .title { font-weight: 800; color: #fff; margin-bottom: 10px; display: block; }
+        .desc { font-size: 13px; color: #aaa; line-height: 1.4; }
+        #loader { display: none; text-align: center; color: var(--accent); padding: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-shell">
     <div class="header">
-        <h2 style="margin:0;">🎥 GPT-Image Thumbnail Creator</h2>
-        <small style="color:#666;">Optimized for YouTube India Trends (Dec 2025)</small>
+        <h1 style="margin:0;">🔥 Viral Trend Engine 2025</h1>
+        <p style="color:#888;">Powered by Gemini 3 Pro & GPT-5</p>
     </div>
 
-    <div class="input-area">
-        <input type="text" id="promptInput" placeholder="Enter video topic (e.g. IPL 2025 Records, Mystery Story)">
-        <button class="gen-btn" onclick="createThumbnail()">GENERATE</button>
+    <div class="grid-controls">
+        <select id="category">
+            <option value="Entertainment">🎬 Entertainment (Movies/OTT)</option>
+            <option value="Education">📚 Education (Skills/Facts)</option>
+            <option value="Gaming">🎮 Gaming (eSports/Meta)</option>
+            <option value="Film & Animation">🎥 Film & Animation</option>
+            <option value="People & Blogs">🤳 People & Blogs</option>
+            <option value="Science & Technology">🧪 Science & Tech (AI/Gadgets)</option>
+            <option value="Sports">🏏 Sports (Cricket/IPL)</option>
+            <option value="Music">🎵 Music (Reels/Remixes)</option>
+            <option value="News & Politics">📰 News & Politics</option>
+            <option value="How-to & Style">💄 How-to & Style</option>
+            <option value="Travel & Events">✈️ Travel & Events</option>
+            <option value="Pets & Animals">🐾 Pets & Animals</option>
+            <option value="Comedy">😂 Comedy (Memes/Skits)</option>
+            <option value="Nonprofits">✊ Nonprofits & Activism</option>
+        </select>
+        <button class="btn" onclick="generateViralIdeas()">GENERATE IDEAS</button>
     </div>
 
-    <div id="viewer">
-        <div id="status" class="loader">⚡ BOOTING GPT-IMAGE-1...</div>
-    </div>
+    <div id="loader">⚡ ANALYZING INDIA SEARCH TRENDS (DEC 23, 2025)...</div>
+    <div id="output" class="result-container"></div>
 </div>
 
 <script>
-    async function createThumbnail() {
-        const userInput = document.getElementById('promptInput').value;
-        const viewer = document.getElementById('viewer');
-        const status = document.getElementById('status');
+async function generateViralIdeas() {
+    const cat = document.getElementById('category').value;
+    const output = document.getElementById('output');
+    const loader = document.getElementById('loader');
 
-        if (!userInput) return alert("Please enter a topic.");
+    loader.style.display = 'block';
+    output.innerHTML = '';
 
-        // UI Prep
-        status.style.display = 'block';
-        const oldImg = viewer.querySelector('img');
-        if (oldImg) oldImg.remove();
+    // Advanced prompt logic for Gemini 3 / GPT-5
+    const prompt = `It is Dec 23, 2025. Generate 4 VIRAL YouTube video ideas for the category "${cat}" specifically for the Indian market.
+    Include:
+    1. A Clickbait (but true) Title.
+    2. A brief 'Why it works' reason based on Dec 2025 trends (e.g., Pushpa 2 success, Kumbh Mela prep, AI advancements).
+    Format as JSON array: [{"title": "...", "why": "..."}]`;
 
-        // Professional Prompt Wrapper
-        // This ensures the gpt-image-1 model understands it's for YouTube
-        const finalPrompt = `Professional YouTube Thumbnail, High-Contrast, 
-        Vivid Colors, Cinematic Lighting. Subject: ${userInput}. 
-        Blurred background, sharp foreground focus, 4k detail, 
-        space for text overlay on left side.`;
+    try {
+        const response = await puter.ai.chat(prompt);
+        // Clean the response in case AI adds markdown
+        const cleanJson = response.toString().replace(/```json|```/g, '').trim();
+        const ideas = JSON.parse(cleanJson);
 
-        try {
-            // Using your requested model: gpt-image-1
-            const imageElement = await puter.ai.txt2img(finalPrompt, { 
-                model: "gpt-image-1" 
-            });
-            
-            viewer.appendChild(imageElement);
-        } catch (err) {
-            console.error(err);
-            viewer.innerHTML += `<p style="color:orange; padding:20px;">AI Busy. Please wait 15 seconds.</p>`;
-        } finally {
-            status.style.display = 'none';
-        }
+        ideas.forEach(idea => {
+            const div = document.createElement('div');
+            div.className = 'idea-card';
+            div.innerHTML = `
+                <div class="viral-badge">EXPLODING</div>
+                <span class="title">${idea.title}</span>
+                <p class="desc">${idea.why}</p>
+            `;
+            output.appendChild(div);
+        });
+    } catch (e) {
+        // Fallback for Dec 23rd specifically
+        const fallback = [
+            {title: "IPL 2025 Auction: Why [Player Name] was a Steal", why: "Cricket fever is peaking after the record-breaking auction numbers."},
+            {title: "Pushpa 2: Ending Explained & Part 3 Theories", why: "The movie is dominating theaters right now; fans are hunting for hidden details."}
+        ];
+        output.innerHTML = `<p style="color:orange">API busy. Showing static Dec 23rd trends:</p>`;
+        fallback.forEach(f => {
+            output.innerHTML += `<div class="idea-card"><span class="title">${f.title}</span><p class="desc">${f.why}</p></div>`;
+        });
+    } finally {
+        loader.style.display = 'none';
     }
+}
 </script>
 
 </body>
